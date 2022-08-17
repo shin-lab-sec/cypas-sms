@@ -1,0 +1,53 @@
+version: '3.9'
+services:
+  redis:
+    build:
+      context: .
+      dockerfile: ./docker/redis/Dockerfile
+    image: redis
+    container_name: redis
+    ports:
+      - '6379:6379'
+
+  express:
+    build:
+      context: .
+      dockerfile: ./docker/express/Dockerfile
+    image: express
+    container_name: express
+    depends_on:
+      - redis
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - '5000:3000'
+
+  # nginx:
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/nginx/Dockerfile
+  #   image: nginx
+  #   container_name: nginx
+  #   ports:
+  #     - 80:80
+
+  wetty1:
+    build:
+      context: .
+      dockerfile: ./docker/wetty/Dockerfile
+    image: wetty
+    container_name: wetty1
+    entrypoint:
+      [
+        'yarn',
+        'start',
+        '--base',
+        '/',
+        '--ssh-host',
+        '127.0.0.1',
+        '--allow-iframe',
+        'true',
+      ]
+    tty: true
+    ports:
+      - 9999:3000
