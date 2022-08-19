@@ -31,7 +31,7 @@ services:
     image: nginx
     container_name: nginx
     ports:
-      - 80:80
+      - 443:443
 
   wetty1:
     build:
@@ -50,27 +50,25 @@ services:
         '--allow-iframe',
         'true',
       ]
-    tty: true
     ports:
-      - 1111:3000
+      - 8888:3000
 
-  wetty2:
-    build:
-      context: .
-      dockerfile: ./docker/wetty/Dockerfile
-    image: wetty
-    container_name: wetty2
-    entrypoint:
-      [
-        'yarn',
-        'start',
-        '--base',
-        '/',
-        '--ssh-host',
-        '127.0.0.1',
-        '--allow-iframe',
-        'true',
-      ]
-    tty: true
-    ports:
-      - 2222:3000
+  # wetty2:
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/wetty/Dockerfile
+  #   image: wetty
+  #   container_name: wetty2
+  #   entrypoint:
+  #     [
+  #       'yarn',
+  #       'start',
+  #       '--base',
+  #       '/',
+  #       '--ssh-host',
+  #       '127.0.0.1',
+  #       '--allow-iframe',
+  #       'true',
+  #     ]
+  #   ports:
+  #     - 2222:3000
