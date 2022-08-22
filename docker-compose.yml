@@ -1,5 +1,14 @@
 version: '3.9'
 services:
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    image: nginx
+    container_name: nginx
+    ports:
+      - 443:443
+
   redis:
     build:
       context: .
@@ -24,34 +33,25 @@ services:
     ports:
       - '5000:3000'
 
-  nginx:
-    build:
-      context: .
-      dockerfile: ./docker/nginx/Dockerfile
-    image: nginx
-    container_name: nginx
-    ports:
-      - 443:443
-
-  wetty1:
-    build:
-      context: .
-      dockerfile: ./docker/wetty/Dockerfile
-    image: wetty
-    container_name: wetty1
-    entrypoint:
-      [
-        'yarn',
-        'start',
-        '--base',
-        '/',
-        '--ssh-host',
-        '127.0.0.1',
-        '--allow-iframe',
-        'true',
-      ]
-    ports:
-      - 8888:3000
+  # wetty1:
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/wetty/Dockerfile
+  #   image: wetty
+  #   container_name: wetty1
+  #   entrypoint:
+  #     [
+  #       'yarn',
+  #       'start',
+  #       '--base',
+  #       '/',
+  #       '--ssh-host',
+  #       '127.0.0.1',
+  #       '--allow-iframe',
+  #       'true',
+  #     ]
+  #   ports:
+  #     - 8888:3000
 
   # wetty2:
   #   build:
