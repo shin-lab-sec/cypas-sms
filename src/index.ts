@@ -2,8 +2,10 @@ import express, { Application } from 'express'
 import { dockerCommand } from 'docker-cli-js'
 import { client } from './libs/redis-client'
 import cors from 'cors'
+import { createHash } from 'crypto'
 
-const PORT = process.env.PORT || 3000
+const CLIENT_URL = 'http://localhost:3000'
+const PORT = process.env.PORT || 5000
 const app: Application = express()
 
 app.listen(PORT, () => {
@@ -20,7 +22,7 @@ app.use(
 // cors設定
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: CLIENT_URL,
     credentials: true,
     optionsSuccessStatus: 200,
   }),
@@ -39,16 +41,17 @@ app.post('/docker', async (req, res) => {
   let result
   try {
     result = await dockerCommand(command)
-    res.status(200).json(result)
+    res.status(200).send(result)
   } catch (e) {
     result = { message: (e as Error).message }
-    res.status(500).json(result)
+    res.status(500).send(result)
   }
 })
 
 app.post('/terminal/start', async (req, res) => {
-  const key = req.body.key
+  const userId = req.body.userId
 
+  // 起動するコンテナのportを用意
   let nextPorts
   const usedPorts = await client.get('usedPorts')
   if (usedPorts) {
@@ -57,31 +60,33 @@ app.post('/terminal/start', async (req, res) => {
     nextPorts = 30000
   }
   await client.set('usedPorts', nextPorts)
-  await client.set(key, nextPorts)
 
-  let result
+  // 起動させた後、keyを生成しレスポンスとして返す
   try {
-    result = await dockerCommand(
-      `run -p ${nextPorts}:3000 --name ${key}  wetty yarn start --ssh-host 127.0.0.1 --base / --allow-iframe true`,
+    await dockerCommand(
+      `run -p ${nextPorts}:3000 -d --name ${userId} wetty yarn start --ssh-host 127.0.0.1 --base / --allow-iframe true`,
     )
-    res.status(200).json(result)
+    const hashKey = createHash('sha256')
+      .update(`${userId}${nextPorts}`)
+      .digest('hex')
+    await client.set(hashKey, nextPorts)
+    res.status(200).send({ key: hashKey })
   } catch (e) {
-    result = { message: (e as Error).message }
-    res.status(500).json(result)
+    res.status(500).send({ message: (e as Error).message })
   }
 })
 
 app.post('/terminal/delete', async (req, res) => {
-  const key = req.body.key
+  const userId = req.body.userId
 
-  await client.del(key)
+  await client.del(userId)
 
   let result
   try {
-    result = await dockerCommand(`container rm ${key} -f`)
-    res.status(200).json(result)
+    result = await dockerCommand(`container rm ${userId} -f`)
+    res.status(200).send(result)
   } catch (e) {
     result = { message: (e as Error).message }
-    res.status(500).json(result)
+    res.status(500).send(result)
   }
 })
