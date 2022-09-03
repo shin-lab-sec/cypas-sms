@@ -79,14 +79,10 @@ app.post('/terminal/start', async (req, res) => {
 app.post('/terminal/delete', async (req, res) => {
   const userId = req.body.userId
 
-  await client.del(userId)
-
-  let result
   try {
-    result = await dockerCommand(`container rm ${userId} -f`)
-    res.status(200).send(result)
+    await dockerCommand(`container rm ${userId} -f`)
+    res.status(200).send({ message: 'su' })
   } catch (e) {
-    result = { message: (e as Error).message }
-    res.status(500).send(result)
+    res.status(500).send({ message: (e as Error).message })
   }
 })
