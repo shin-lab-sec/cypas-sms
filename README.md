@@ -10,6 +10,8 @@ wettyproxy.localhost.com
 
 ## コンテナ起動
 
+今の状況だと wetty コンテナを手動でビルドする必要がある
+
 ```
 docker compose up
 ```
