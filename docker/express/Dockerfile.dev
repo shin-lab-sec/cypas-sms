@@ -1,0 +1,18 @@
+FROM docker:20.10.17
+
+WORKDIR /usr/src/app
+RUN apk add bash curl nodejs yarn
+
+# 今後はrootユーザー以外にしたい。dockerコマンドが叩けない問題があり、今はrootになっている。
+# ARG USER_ID="10000"
+# ARG GROUP_ID="10001"
+# ARG USER_NAME="node"
+# RUN addgroup -S -g "${GROUP_ID}" "${USER_NAME}" && \
+# adduser -u "${USER_ID}" -G "${USER_NAME}" -D "${USER_NAME}"
+# COPY --chown=node:node . .
+# RUN yarn install
+# USER node
+
+COPY . .
+RUN yarn install
+ENTRYPOINT [ "yarn","run","dev" ]

@@ -3,7 +3,7 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: ./docker/nginx/Dockerfile
+      dockerfile: ./docker/nginx/Dockerfile.dev
     image: nginx
     container_name: nginx
     ports:
@@ -12,7 +12,7 @@ services:
   redis:
     build:
       context: .
-      dockerfile: ./docker/redis/Dockerfile
+      dockerfile: ./docker/redis/Dockerfile.dev
     image: redis
     container_name: redis
     ports:
@@ -23,52 +23,27 @@ services:
   express:
     build:
       context: .
-      dockerfile: ./docker/express/Dockerfile
+      dockerfile: ./docker/express/Dockerfile.dev
     image: express
     container_name: express
     depends_on:
       - redis
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./:/usr/src/app
+      - express_node_modules:/usr/src/app
     ports:
       - '5000:5000'
 
-  # wetty1:
+volumes:
+  express_node_modules:
+
+  # wetty-for-build-only:
   #   build:
   #     context: .
-  #     dockerfile: ./docker/wetty/Dockerfile
+  #     dockerfile: ./docker/wetty/Dockerfile.dev
   #   image: wetty
   #   container_name: wetty1
-  #   entrypoint:
-  #     [
-  #       'yarn',
-  #       'start',
-  #       '--base',
-  #       '/',
-  #       '--ssh-host',
-  #       '127.0.0.1',
-  #       '--allow-iframe',
-  #       'true',
-  #     ]
+  #   entrypoint: ['ls']
   #   ports:
   #     - 8888:3000
-
-  # wetty2:
-  #   build:
-  #     context: .
-  #     dockerfile: ./docker/wetty/Dockerfile
-  #   image: wetty
-  #   container_name: wetty2
-  #   entrypoint:
-  #     [
-  #       'yarn',
-  #       'start',
-  #       '--base',
-  #       '/',
-  #       '--ssh-host',
-  #       '127.0.0.1',
-  #       '--allow-iframe',
-  #       'true',
-  #     ]
-  #   ports:
-  #     - 2222:3000

@@ -1,10 +1,10 @@
 {
   "name": "cyber-range-server",
   "version": "0.0.1",
-  "type": "module",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "nodemon  --exec ts-node src/index.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -19,6 +19,8 @@
     "@types/express": "^4.17.13",
     "@types/node": "^18.7.5",
     "@types/node-fetch": "2.x",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
   }
 }

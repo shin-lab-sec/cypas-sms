@@ -32,7 +32,7 @@ app.get('/redis', async (_req, res) => {
   await client.set('key', 'value')
   const value = await client.get('key')
   res.send({
-    message: value,
+    message: value + 'ffff',
   })
 })
 
