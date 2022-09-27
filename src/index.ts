@@ -4,8 +4,7 @@ import { client } from './libs/redis-client'
 import cors from 'cors'
 import { createHash } from 'crypto'
 
-const CLIENT_URL = 'http://localhost:3000'
-const PORT = process.env.PORT || 5000
+const PORT = 5000
 const app: Application = express()
 
 app.listen(PORT, () => {
@@ -22,7 +21,7 @@ app.use(
 // cors設定
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin: process.env.CLIENT_URL,
     credentials: true,
     optionsSuccessStatus: 200,
   }),
