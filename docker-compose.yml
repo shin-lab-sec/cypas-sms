@@ -2,8 +2,8 @@ version: '3.9'
 services:
   nginx:
     build:
-      context: .
-      dockerfile: ./docker/nginx/Dockerfile.dev
+      context: ./nginx
+      dockerfile: Dockerfile.dev
     image: nginx
     container_name: nginx
     ports:
@@ -11,8 +11,8 @@ services:
 
   redis:
     build:
-      context: .
-      dockerfile: ./docker/redis/Dockerfile.dev
+      context: ./redis
+      dockerfile: Dockerfile.dev
     image: redis
     container_name: redis
     volumes:
@@ -20,15 +20,15 @@ services:
 
   express:
     build:
-      context: .
-      dockerfile: ./docker/express/Dockerfile.dev
+      context: ./express
+      dockerfile: Dockerfile.dev
     image: express
     container_name: express
     depends_on:
       - redis
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./:/usr/src/app
+      - ./express:/usr/src/app
       - express_node_modules:/usr/src/app/node_modules
     ports:
       - '5000:5000'

@@ -14,5 +14,5 @@ RUN apk add bash curl nodejs yarn
 # USER node
 
 COPY . .
-RUN yarn install
+RUN yarn --frozen-lockfile
 ENTRYPOINT [ "yarn","run","dev" ]
