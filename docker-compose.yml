@@ -30,9 +30,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./express:/usr/src/app
       - express_node_modules:/usr/src/app/node_modules
-    ports:
-      - '5000:5000'
-
 volumes:
   express_node_modules:
   redis_data:
