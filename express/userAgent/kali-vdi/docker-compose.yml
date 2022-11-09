@@ -1,0 +1,8 @@
+version: "3"
+services:
+  kali-vdi:
+    image: kasmweb/core-kali-rolling:1.11.0
+    environment:
+      - VNC_PW=password
+    ports:
+      - ${PORT}:6901

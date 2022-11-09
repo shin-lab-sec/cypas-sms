@@ -3,6 +3,7 @@ import { dockerCommand } from 'docker-cli-js'
 import { client } from './libs/redis-client'
 import cors from 'cors'
 import { createHash } from 'crypto'
+import fs from 'fs'
 
 const PORT = 5000
 const app: Application = express()
@@ -28,10 +29,10 @@ app.use(
 )
 
 app.get('/redis', async (_req, res) => {
-  await client.set('key', 'value')
+  await client.set('key', 'redis-test')
   const value = await client.get('key')
   res.send({
-    message: value + 'ffff',
+    message: value + ' success',
   })
 })
 
@@ -63,12 +64,13 @@ app.post('/terminal/start', async (req, res) => {
   // 起動させた後、keyを生成しレスポンスとして返す
   try {
     await dockerCommand(
-      `run -p ${nextPorts}:3000 -d --name ${userId} wetty yarn start --ssh-host 127.0.0.1 --base / --allow-iframe true`,
+      // TODO: nextPorts使う
+      `compose -p ${userId} -f ./curriculum/sample-curriculum/docker-compose.yml -f ./userAgent/kali-wetty/docker-compose.yml --env-file ./curriculum/sample-curriculum/.env --env-file ./userAgent/kali-wetty/.env up -d`,
     )
     const hashKey = createHash('sha256')
       .update(`${userId}${nextPorts}`)
       .digest('hex')
-    await client.set(hashKey, nextPorts)
+    await client.set(hashKey, 30000)
     res.status(200).send({ key: hashKey })
   } catch (e) {
     res.status(500).send({ message: (e as Error).message })
@@ -79,9 +81,21 @@ app.post('/terminal/delete', async (req, res) => {
   const userId = req.body.userId
 
   try {
-    await dockerCommand(`container rm ${userId} -f`)
-    res.status(200).send({ message: 'su' })
+    await dockerCommand(`compose -p ${userId} down`)
+    res.status(200).send({ message: 'success' })
   } catch (e) {
     res.status(500).send({ message: (e as Error).message })
   }
+})
+
+app.get('/env', async (_req, res) => {
+  const s = 'PORT=6000'
+  try {
+    fs.writeFileSync('.env.test', s, 'utf-8')
+  } catch (err) {
+    console.log(err)
+  }
+  res.send({
+    message: process.env,
+  })
 })
