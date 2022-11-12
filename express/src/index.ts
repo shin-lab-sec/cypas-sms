@@ -4,6 +4,7 @@ import { client } from './libs/redis-client'
 import cors from 'cors'
 import { createHash } from 'crypto'
 import fs from 'fs'
+import { generateUserAgentEnv } from '../userAgent/generateUserAgentEnv'
 
 const PORT = 5000
 const app: Application = express()
@@ -49,7 +50,8 @@ app.post('/docker', async (req, res) => {
 })
 
 app.post('/terminal/start', async (req, res) => {
-  const userId = req.body.userId
+  const userId = req.body.userId as string
+  const userName = req.body.userName as string
 
   // 起動するコンテナのportを用意
   let nextPorts
@@ -66,11 +68,12 @@ app.post('/terminal/start', async (req, res) => {
     await dockerCommand(
       // TODO: nextPorts使う
       `compose -p ${userId} -f ./curriculum/sample-curriculum/docker-compose.yml -f ./userAgent/kali-wetty/docker-compose.yml --env-file ./curriculum/sample-curriculum/.env --env-file ./userAgent/kali-wetty/.env up -d`,
+      { env: generateUserAgentEnv(nextPorts, userName, userName) },
     )
     const hashKey = createHash('sha256')
       .update(`${userId}${nextPorts}`)
       .digest('hex')
-    await client.set(hashKey, 30000)
+    await client.set(hashKey, nextPorts)
     res.status(200).send({ key: hashKey })
   } catch (e) {
     res.status(500).send({ message: (e as Error).message })

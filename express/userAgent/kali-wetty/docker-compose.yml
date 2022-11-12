@@ -4,9 +4,9 @@ services:
     build:
       context: ./wetty
     image: user-agent-wetty
-    entrypoint: yarn start --ssh-host user-agent-kali --ssh-user ${USER_NAME} --ssh-pass ${USER_PASSWORD}  --base / --allow-iframe true
+    entrypoint: yarn start --ssh-host user-agent-kali --ssh-user ${USER_AGENT_NAME} --ssh-pass ${USER_AGENT_PASSWORD}  --base / --allow-iframe true
     ports:
-      - ${PORT}:3000
+      - ${USER_AGENT_PORT}:3000
 
   user-agent-kali:
     build:
@@ -16,10 +16,10 @@ services:
     # ユーザーを作成してssh server起動
     command: >
       bash -c "
-      useradd -m ${USER_NAME} &&
-      echo '${USER_NAME}:${USER_PASSWORD}' | chpasswd &&
-      usermod -aG sudo ${USER_NAME} &&
-      chsh -s /bin/bash ${USER_NAME} &&
+      useradd -m ${USER_AGENT_NAME} &&
+      echo '${USER_AGENT_NAME}:${USER_AGENT_PASSWORD}' | chpasswd &&
+      usermod -aG sudo ${USER_AGENT_NAME} &&
+      chsh -s /bin/bash ${USER_AGENT_NAME} &&
       service ssh start &&
       /bin/bash
       "
