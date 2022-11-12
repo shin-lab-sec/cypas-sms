@@ -1,10 +1,9 @@
-version: '3.9'
+version: "3.9"
 services:
   nginx:
     build:
       context: ./nginx
       dockerfile: Dockerfile.dev
-    image: nginx
     container_name: nginx
     ports:
       - 443:443
@@ -13,7 +12,6 @@ services:
     build:
       context: ./redis
       dockerfile: Dockerfile.dev
-    image: redis
     container_name: redis
     volumes:
       - redis_data:/data
@@ -22,7 +20,6 @@ services:
     build:
       context: ./express
       dockerfile: Dockerfile.dev
-    image: express
     container_name: express
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -33,13 +30,3 @@ services:
 volumes:
   express_node_modules:
   redis_data:
-
-  # wetty-for-build-only:
-  #   build:
-  #     context: .
-  #     dockerfile: ./docker/wetty/Dockerfile.dev
-  #   image: wetty
-  #   container_name: wetty1
-  #   entrypoint: ['ls']
-  #   ports:
-  #     - 8888:3000
