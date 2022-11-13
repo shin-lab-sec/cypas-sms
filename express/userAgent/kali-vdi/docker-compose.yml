@@ -1,6 +1,6 @@
-version: "3"
+version: '3'
 services:
-  kali-vdi:
+  user-agent-kali-vdi:
     image: kasmweb/core-kali-rolling:1.11.0
     environment:
       - VNC_PW=${USER_AGENT_PASSWORD}
