@@ -64,10 +64,11 @@ app.post('/terminal/start', async (req, res) => {
   await client.set('usedPorts', nextPorts)
 
   // 起動させた後、keyを生成しレスポンスとして返す
+  const curriculum: 'sample-curriculum' = 'sample-curriculum'
+  const userAgent: 'kali-vdi' | 'kali-wetty' = 'kali-vdi'
   try {
     await dockerCommand(
-      // TODO: nextPorts使う
-      `compose -p ${userId} -f ./curriculum/sample-curriculum/docker-compose.yml -f ./userAgent/kali-wetty/docker-compose.yml --env-file ./curriculum/sample-curriculum/.env --env-file ./userAgent/kali-wetty/.env up -d`,
+      `compose -p ${userId} -f ./curriculum/${curriculum}/docker-compose.yml -f ./userAgent/${userAgent}/docker-compose.yml --env-file ./curriculum/${curriculum}/.env --env-file ./userAgent/${userAgent}/.env up -d`,
       { env: generateUserAgentEnv(nextPorts, userName, userName) },
     )
     const hashKey = createHash('sha256')
