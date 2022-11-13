@@ -1,6 +1,6 @@
-## userAgent
+# userAgent
 
-curriculum を`docker compose up`する時に一緒に起動するコンテナ。各ユーザーはこのコンテナに接続して curriculum を体験する。
+  curriculum を`docker compose up`する時に同一ネットワークワーク上に起動するコンテナ。各ユーザーはこのコンテナに接続して curriculum を体験する。
 
 ## 仕様
 
