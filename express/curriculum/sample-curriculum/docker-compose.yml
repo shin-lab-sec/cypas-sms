@@ -3,11 +3,14 @@ services:
   frontend:
     build:
       context: ./frontend
+    image: sample-curriculum/frontend
 
   backend:
     build:
       context: ./backend
+    image: sample-curriculum/backend
 
   reverse-proxy:
     build:
       context: ./reverse-proxy
+    image: sample-curriculum/reverse-proxy
