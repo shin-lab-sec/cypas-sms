@@ -1,25 +1,21 @@
 import express, { Application } from 'express'
-import { dockerCommand } from 'docker-cli-js'
-import { client } from './libs/redis-client'
+import { client } from 'libs/redis-client'
 import cors from 'cors'
-import { createHash } from 'crypto'
 import fs from 'fs'
-import { generateUserAgentEnv } from '../userAgent/generateUserAgentEnv'
+import { dockerRouter } from 'routes/docker'
+import { scenarioRouter } from 'routes/scenario'
 
-const PORT = 5000
 const app: Application = express()
 
-app.listen(PORT, () => {
-  console.log('Server is running on port', PORT)
+//起動
+app.listen(5000, () => {
+  console.log('Server is running on port', 5000)
 })
 
 // parser設定
 app.use(express.json())
-app.use(
-  express.urlencoded({
-    extended: true,
-  }),
-)
+app.use(express.urlencoded({ extended: true }))
+
 // cors設定
 app.use(
   cors({
@@ -29,67 +25,17 @@ app.use(
   }),
 )
 
+//ルーティング
+app.use('/docker', dockerRouter)
+app.use('/scenario', scenarioRouter)
+
+//開発用
 app.get('/redis', async (_req, res) => {
   await client.set('key', 'redis-test')
   const value = await client.get('key')
   res.send({
     message: value + ' success',
   })
-})
-
-app.post('/docker', async (req, res) => {
-  const command = req.body.command
-  let result
-  try {
-    result = await dockerCommand(command)
-    res.status(200).send(result)
-  } catch (e) {
-    result = { message: (e as Error).message }
-    res.status(500).send(result)
-  }
-})
-
-app.post('/terminal/start', async (req, res) => {
-  const userId = req.body.userId as string
-  const userName = req.body.userName as string
-
-  // 起動するコンテナのportを用意
-  let nextPorts
-  const usedPorts = await client.get('usedPorts')
-  if (usedPorts) {
-    nextPorts = Number(usedPorts) + 1
-  } else {
-    nextPorts = 30000
-  }
-  await client.set('usedPorts', nextPorts)
-
-  // 起動させた後、keyを生成しレスポンスとして返す
-  const curriculum: 'sample-curriculum' = 'sample-curriculum'
-  const userAgent: 'kali-vdi' | 'kali-wetty' = 'kali-vdi'
-  try {
-    await dockerCommand(
-      `compose -p ${userId} -f ./curriculum/${curriculum}/docker-compose.yml -f ./userAgent/${userAgent}/docker-compose.yml --env-file ./curriculum/${curriculum}/.env --env-file ./userAgent/${userAgent}/.env up -d`,
-      { env: generateUserAgentEnv(nextPorts, userName, userName) },
-    )
-    const hashKey = createHash('sha256')
-      .update(`${userId}${nextPorts}`)
-      .digest('hex')
-    await client.set(hashKey, nextPorts)
-    res.status(200).send({ key: hashKey })
-  } catch (e) {
-    res.status(500).send({ message: (e as Error).message })
-  }
-})
-
-app.post('/terminal/delete', async (req, res) => {
-  const userId = req.body.userId
-
-  try {
-    await dockerCommand(`compose -p ${userId} down`)
-    res.status(200).send({ message: 'success' })
-  } catch (e) {
-    res.status(500).send({ message: (e as Error).message })
-  }
 })
 
 app.get('/env', async (_req, res) => {
