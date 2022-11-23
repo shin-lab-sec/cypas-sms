@@ -1,9 +1,9 @@
 import express, { Application } from 'express'
-import { client } from 'libs/redis-client'
+import { client } from './libs/redis-client'
 import cors from 'cors'
 import fs from 'fs'
-import { dockerRouter } from 'routes/docker'
-import { scenarioRouter } from 'routes/scenario'
+import { dockerRouter } from './routes/docker'
+import { scenarioRouter } from './routes/scenario'
 
 const app: Application = express()
 

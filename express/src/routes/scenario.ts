@@ -1,7 +1,7 @@
 import { createHash } from 'crypto'
 import { dockerCommand } from 'docker-cli-js'
 import express from 'express'
-import { client } from 'libs/redis-client'
+import { client } from '../libs/redis-client'
 import { generateUserAgentEnv } from '../../userAgent/generateUserAgentEnv'
 
 export const scenarioRouter = express.Router()
