@@ -4,6 +4,7 @@ services:
     build:
       context: ./wetty
     image: user-agent-wetty
+    container_name: user-agent-wetty-${USER_AGENT_NAME}
     entrypoint: yarn start --ssh-host user-agent-kali --ssh-user ${USER_AGENT_NAME} --ssh-pass ${USER_AGENT_PASSWORD}  --base / --allow-iframe true
     ports:
       - ${USER_AGENT_PORT}:3000
@@ -13,6 +14,7 @@ services:
       context: ./kali
     tty: true
     image: user-agent-kali
+    container_name: user-agent-kali-${USER_AGENT_NAME}
     # ユーザーを作成してssh server起動
     command: >
       bash -c "

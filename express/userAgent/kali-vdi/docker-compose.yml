@@ -2,6 +2,7 @@ version: '3'
 services:
   user-agent-kali-vdi:
     image: kasmweb/core-kali-rolling:1.11.0
+    container_name: user-agent-kali-vdi-${USER_AGENT_NAME}
     environment:
       - VNC_PW=${USER_AGENT_PASSWORD}
     ports:
