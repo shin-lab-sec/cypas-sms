@@ -1,6 +1,6 @@
 version: '3'
 services:
-  user-agent-wetty:
+  user-agent-wetty-UNIQUE:
     build:
       context: ./wetty
     image: user-agent-wetty
@@ -9,7 +9,7 @@ services:
     ports:
       - ${USER_AGENT_PORT}:3000
 
-  user-agent-kali:
+  user-agent-kali-UNIQUE:
     build:
       context: ./kali
     tty: true

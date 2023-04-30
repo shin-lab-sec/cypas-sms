@@ -1,6 +1,6 @@
 version: '3'
 services:
-  user-agent-kali-vdi:
+  user-agent-kali-vdi-UNIQUE:
     image: kasmweb/core-kali-rolling:1.11.0
     container_name: user-agent-kali-vdi-${USER_AGENT_NAME}
     environment:

@@ -1,14 +1,14 @@
-import { createHash } from 'crypto'
 import { dockerCommand } from 'docker-cli-js'
 import express from 'express'
 import { client } from '../libs/redis-client'
 import { createHashKey } from '../utils/createHashKey'
 import {
+  composeUpCurriculum,
+  composeUpUserAgent,
   existsScenario,
   existsUserAgent,
   getNextPorts,
 } from '../services/scenario-services'
-import { generateUserAgentEnv } from '../../userAgent/generateUserAgentEnv'
 
 export const scenarioRouter = express.Router()
 
@@ -32,24 +32,28 @@ scenarioRouter.post('/', async (req, res) => {
   // 起動するコンテナのportを用意
   let nextPorts = await getNextPorts()
 
+  // docker compose up時に必要な引数をまとめて定義
+  const options = {
+    scenarioKey,
+    curriculum,
+    userAgent,
+    nextPorts,
+    userName,
+  }
+
   try {
-    // ユーザーエージェントのみ起動
-    // NOTE: 現在のコマンドだと2個目以降のユーザーエージェントが上書きされてしまう
-    if (isExistsScenario && !isExistsUserAgent) {
-      await dockerCommand(
-        `compose -p ${scenarioKey} -f ./userAgent/${userAgent}/docker-compose.yml --env-file ./userAgent/${userAgent}/.env up -d`,
-        { env: generateUserAgentEnv(nextPorts, userName, userName) },
-      )
-    }
-
-    // シナリオ、ユーザーエージェントを起動
+    // カリキュラムとユーザーエージェントを起動
     if (!isExistsScenario && !isExistsUserAgent) {
-      await dockerCommand(
-        `compose -p ${scenarioKey} -f ./curriculum/${curriculum}/docker-compose.yml -f ./userAgent/${userAgent}/docker-compose.yml --env-file ./curriculum/${curriculum}/.env --env-file ./userAgent/${userAgent}/.env up -d`,
-        { env: generateUserAgentEnv(nextPorts, userName, userName) },
-      )
+      await composeUpCurriculum(options)
+      await composeUpUserAgent(options)
     }
 
+    // ユーザーエージェントのみ起動
+    if (isExistsScenario && !isExistsUserAgent) {
+      await composeUpUserAgent(options)
+    }
+
+    // keyを生成し、redisに登録
     const hashKey = createHashKey(scenarioKey, nextPorts)
     await client.set(hashKey, nextPorts)
 
