@@ -12,13 +12,12 @@ import {
 
 export const scenarioRouter = express.Router()
 
-const curriculum: 'sample-curriculum' = 'sample-curriculum'
-const userAgent: 'kali-vdi' | 'kali-wetty' = 'kali-vdi'
-
 // 起動させた後、keyを生成しレスポンスとして返す
 scenarioRouter.post('/', async (req, res) => {
   const scenarioKey = req.body.scenarioKey as string
   const userName = req.body.userName as string
+  const curriculumName = req.body.curriculumName as string
+  const userAgentName = req.body.userAgentName as string
 
   const isExistsScenario = await existsScenario(scenarioKey)
   const isExistsUserAgent = await existsUserAgent(scenarioKey, userName)
@@ -35,8 +34,8 @@ scenarioRouter.post('/', async (req, res) => {
   // docker compose up時に必要な引数をまとめて定義
   const options = {
     scenarioKey,
-    curriculum,
-    userAgent,
+    curriculumName,
+    userAgentName,
     nextPorts,
     userName,
   }
@@ -64,9 +63,10 @@ scenarioRouter.post('/', async (req, res) => {
 })
 
 scenarioRouter.delete('/', async (req, res) => {
-  const scenarioKey = req.body.scenarioKey as string
+  const scenarioKey = req.query.scenarioKey as string
 
   try {
+    // 消せなくてもエラー出ない！！対応必須！
     await dockerCommand(`compose -p ${scenarioKey} down`)
 
     res.status(200).send({ message: 'success' })

@@ -50,25 +50,25 @@ export const existsUserAgent = async (
 // カリキュラム起動
 export const composeUpCurriculum = async ({
   scenarioKey,
-  curriculum,
+  curriculumName,
 }: {
   scenarioKey: string
-  curriculum: string
+  curriculumName: string
 }) => {
   await dockerCommand(
-    `compose -p ${scenarioKey} -f ./curriculum/${curriculum}/docker-compose.yml --env-file ./curriculum/${curriculum}/.env up -d`,
+    `compose -p ${scenarioKey} -f ./curriculum/${curriculumName}/docker-compose.yml --env-file ./curriculum/${curriculumName}/.env up -d`,
   )
 }
 
 // ユーザーエージェント起動
 export const composeUpUserAgent = async ({
   scenarioKey,
-  userAgent,
+  userAgentName,
   nextPorts,
   userName,
 }: {
   scenarioKey: string
-  userAgent: string
+  userAgentName: string
   nextPorts: number
   userName: string
 }) => {
@@ -80,13 +80,13 @@ export const composeUpUserAgent = async ({
   // 5. よし、docker-compose.yml自体を動的に書き換えちゃえ
   // 6. 各service名を「hoge-UNIQUE」みたいにしてUNIQUEをuserNameに書き換えて解決！
   replaceUNIQUEInYml({
-    inputFilePath: `./userAgent/${userAgent}/docker-compose.yml`,
+    inputFilePath: `./userAgent/${userAgentName}/docker-compose.yml`,
     outputFilePath: './tmp/docker-compose.yml',
     UNIQUEto: userName,
   })
 
   await dockerCommand(
-    `compose -p ${scenarioKey} -f ./tmp/docker-compose.yml --env-file ./userAgent/${userAgent}/.env up -d`,
+    `compose -p ${scenarioKey} -f ./tmp/docker-compose.yml --env-file ./userAgent/${userAgentName}/.env up -d`,
     { env: generateUserAgentEnv(nextPorts, userName, userName) },
   )
 }
