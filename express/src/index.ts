@@ -8,8 +8,8 @@ import { scenarioRouter } from './routes/scenario'
 const app: Application = express()
 
 //起動
-app.listen(5000, () => {
-  console.log('Server is running on port', 5000)
+app.listen(8001, () => {
+  console.log('Server is running on port', 8001)
 })
 
 // parser設定

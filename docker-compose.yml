@@ -28,6 +28,8 @@ services:
       - .vscode:/usr/src/app/.vscode
     environment:
       - CHOKIDAR_USEPOLLING=true
+    ports:
+      - 8001:5000
 volumes:
   express_node_modules:
   redis_data:
