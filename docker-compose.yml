@@ -6,7 +6,8 @@ services:
       dockerfile: Dockerfile.dev
     container_name: nginx
     ports:
-      - 443:443
+      # cypas-local-tls-proxyとportが被るためずらしている
+      - 4443:443
 
   redis:
     build:
@@ -29,7 +30,7 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
     ports:
-      - 8001:5000
+      - 8001:8001
 volumes:
   express_node_modules:
   redis_data:
