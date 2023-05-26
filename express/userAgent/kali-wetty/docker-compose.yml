@@ -5,7 +5,20 @@ services:
       context: ./wetty
     image: user-agent-wetty
     container_name: user-agent-wetty-${USER_AGENT_NAME}
-    entrypoint: yarn start --ssh-host user-agent-kali-UNIQUE --ssh-user ${USER_AGENT_NAME} --ssh-pass ${USER_AGENT_PASSWORD}  --base / --allow-iframe true
+    entrypoint: >
+      bash -c "
+      node ./replaceBugCode.js &&
+      yarn start \
+      --ssh-host user-agent-kali-UNIQUE \
+      --ssh-user ${USER_AGENT_NAME} \
+      --ssh-pass ${USER_AGENT_PASSWORD} \
+      --ssl-key 'ssl/key.pem' \
+      --ssl-cert 'ssl/cert.pem' \
+      --base /  \
+      --allow-iframe \
+      --allow-remote-hosts \
+      --port 3000 \
+      "
     ports:
       - ${USER_AGENT_PORT}:3000
 

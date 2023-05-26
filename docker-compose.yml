@@ -7,7 +7,7 @@ services:
     container_name: nginx
     ports:
       # cypas-local-tls-proxyとportが被るためずらしている
-      - 4443:443
+      - 4443:4443
 
   redis:
     build:
