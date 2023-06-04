@@ -1,10 +1,10 @@
 {
-  "name": "cyber-range-server",
+  "name": "cypas-sms",
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "dev": "env-cmd -f .env nodemon  --exec ts-node src/index.ts"
+    "dev": "env-cmd -f .env nodemon --exec ts-node src/index.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

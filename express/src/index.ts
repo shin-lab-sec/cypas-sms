@@ -3,7 +3,7 @@ import { client } from './libs/redis-client'
 import cors from 'cors'
 import fs from 'fs'
 import { dockerRouter } from './routes/docker'
-import { scenarioRouter } from './routes/scenario'
+import { sandboxRouter } from './routes/sandbox'
 
 const app: Application = express()
 
@@ -27,7 +27,7 @@ app.use(
 
 //ルーティング
 app.use('/docker', dockerRouter)
-app.use('/scenario', scenarioRouter)
+app.use('/sandbox', sandboxRouter)
 
 //開発用
 app.get('/redis', async (_req, res) => {

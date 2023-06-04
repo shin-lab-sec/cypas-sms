@@ -29,45 +29,42 @@ type DockerPsResponse = {
 }
 
 //シナリオが存在するかどうか
-export const existsScenario = async (scenarioKey: string) => {
+export const existsScenario = async (sandboxKey: string) => {
   const result = (await dockerCommand(
-    `compose -p ${scenarioKey} ps`,
+    `compose -p ${sandboxKey} ps`,
   )) as DockerPsResponse
   return result.containerList.length > 0
 }
 
 // ユーザーエージェントが存在するかどうか
-export const existsUserAgent = async (
-  scenarioKey: string,
-  userName: string,
-) => {
+export const existsUserAgent = async (sandboxKey: string, userName: string) => {
   const result = (await dockerCommand(
-    `compose -p ${scenarioKey} ps`,
+    `compose -p ${sandboxKey} ps`,
   )) as DockerPsResponse
   return result.containerList.some(v => v.name.endsWith(userName))
 }
 
-// カリキュラム起動
-export const composeUpCurriculum = async ({
-  scenarioKey,
-  curriculumName,
+// シナリオ起動
+export const composeUpScenario = async ({
+  sandboxKey,
+  scenarioName,
 }: {
-  scenarioKey: string
-  curriculumName: string
+  sandboxKey: string
+  scenarioName: string
 }) => {
   await dockerCommand(
-    `compose -p ${scenarioKey} -f ./curriculum/${curriculumName}/docker-compose.yml --env-file ./curriculum/${curriculumName}/.env up -d`,
+    `compose -p ${sandboxKey} -f ./scenario/${scenarioName}/docker-compose.yml --env-file ./scenario/${scenarioName}/.env up -d`,
   )
 }
 
 // ユーザーエージェント起動
 export const composeUpUserAgent = async ({
-  scenarioKey,
+  sandboxKey,
   userAgentName,
   nextPorts,
   userName,
 }: {
-  scenarioKey: string
+  sandboxKey: string
   userAgentName: string
   nextPorts: number
   userName: string
@@ -86,7 +83,7 @@ export const composeUpUserAgent = async ({
   })
 
   await dockerCommand(
-    `compose -p ${scenarioKey} -f ./tmp/docker-compose.yml --env-file ./userAgent/${userAgentName}/.env up -d`,
+    `compose -p ${sandboxKey} -f ./tmp/docker-compose.yml --env-file ./userAgent/${userAgentName}/.env up -d`,
     { env: generateUserAgentEnv(nextPorts, userName, userName) },
   )
 }

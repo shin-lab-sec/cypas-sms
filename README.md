@@ -1,6 +1,8 @@
-# cyber-range-server
+# cypas-sms
 
-テーマ「クラウドベースのセキュリティ演習」の sms, useragent 側のリポジトリ
+Sandbox Management System
+
+Cypas におけるサンドボックス管理の役割を持ったリポジトリ
 
 ## 開発準備
 
