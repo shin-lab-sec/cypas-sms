@@ -3,14 +3,18 @@ services:
   frontend:
     build:
       context: ./frontend
-    image: sample-curriculum/frontend
+    image: sample-scenario/frontend
 
   backend:
     build:
       context: ./backend
-    image: sample-curriculum/backend
+    image: sample-scenario/backend
 
   reverse-proxy:
     build:
       context: ./reverse-proxy
-    image: sample-curriculum/reverse-proxy
+    image: sample-scenario/reverse-proxy
+
+    # 開発用
+    ports:
+      - ${DEV_NGINX_PORT}:80
