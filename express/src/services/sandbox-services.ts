@@ -71,11 +71,11 @@ export const composeUpUserAgent = async ({
 }) => {
   // 1. 複数人でシナリオを起動したい
   // 2. 環境変数だけ変えてdocker compose up！
-  // 2. ユーザーエージェントが上書きされてしまう問題発生
-  // 3. docker-compose.yml内のservicesの各service名が同じだと上書きされるみたい
-  // 4. docker compose時の環境変数で各service名を動的に埋め込めない（docker composeの仕様的に）
-  // 5. よし、docker-compose.yml自体を動的に書き換えちゃえ
-  // 6. 各service名を「hoge-UNIQUE」みたいにしてUNIQUEをuserNameに書き換えて解決！
+  // 3. ユーザーエージェントが上書きされてしまう問題発生
+  // 4. docker-compose.yml内のservicesの各service名が同じだと上書きされるみたい
+  // 5. docker compose時の環境変数で各service名を動的に埋め込めない（docker composeの仕様的に）
+  // 6. よし、docker-compose.yml自体を動的に書き換えちゃえ
+  // 7. 各service名を「hoge-UNIQUE」みたいにしてUNIQUEをuserNameに書き換えて解決！
   replaceUNIQUEInYml({
     inputFilePath: `./userAgent/${userAgentName}/docker-compose.yml`,
     outputFilePath: './tmp/docker-compose.yml',
