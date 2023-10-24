@@ -1,21 +1,5 @@
 # 参考 https://www.tomray.dev/nestjs-docker-production
 
-###################
-# BUILD FOR LOCAL DEVELOPMENT
-###################
-FROM node:18-alpine As development
-
-WORKDIR /usr/src/app
-
-COPY --chown=node:node package.json ./
-COPY --chown=node:node yarn.lock ./
-
-RUN yarn
-
-COPY --chown=node:node . .
-
-USER node
-
 
 ###################
 # BUILD FOR PRODUCTION
@@ -24,12 +8,13 @@ FROM node:18-alpine As build
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node package.json ./
-COPY --chown=node:node yarn.lock ./
+COPY --chown=node:node ./express/package.json ./
+COPY --chown=node:node ./express/yarn.lock ./
 
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
 
-COPY --chown=node:node . .
+COPY --chown=node:node ./express .
+COPY --chown=node:node .env .
 
 RUN yarn build
 
@@ -43,7 +28,7 @@ USER node
 ###################
 # PRODUCTION
 ###################
-FROM docker:20.10.17 As production
+FROM docker:24.0.6 As production
 
 RUN apk add bash curl nodejs
 

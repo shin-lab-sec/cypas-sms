@@ -1,8 +1,9 @@
+version: '3.9'
 services:
   nginx:
     build:
       context: ./nginx
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
     container_name: nginx
     ports:
       # cypas-local-tls-proxyとportが被るためずらしている
@@ -11,26 +12,19 @@ services:
   redis:
     build:
       context: ./redis
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
     container_name: redis
     volumes:
       - redis_data:/data
 
   express:
     build:
-      context: ./express
-      dockerfile: Dockerfile.dev
+      dockerfile: express/Dockerfile.prod
     container_name: express
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./express:/usr/src/app
-      - ./.env:/usr/src/app/.env
-      - express_node_modules:/usr/src/app/node_modules
-      - .vscode:/usr/src/app/.vscode
-    environment:
-      - CHOKIDAR_USEPOLLING=true
     ports:
       - 8001:8001
+
 volumes:
-  express_node_modules:
   redis_data:

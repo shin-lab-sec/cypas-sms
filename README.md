@@ -29,3 +29,11 @@ docker compose down
 ```
 docker compose up --build
 ```
+
+## 本番用 docker compose up
+
+.env ファイルを上書きした後
+
+```
+docker compose -f docker-compose.prod.yml up --build
+```
